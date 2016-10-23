@@ -8,6 +8,8 @@ import (
 	"io"
 	"log"
 	"os"
+	"strings"
+	"github.com/agirenko/newsscraper/helper"
 	//"path/filepath"
 	//"go/doc"
 )
@@ -26,13 +28,57 @@ func GetNews(url string) []articleDescription {
 
 	doc := loadDoc("page.html")
 	//var articleNodes = HtmlDoc.DocumentNode.SelectNodes("//td[@class='esc-layout-article-cell']");
-	articleNodes :=doc.Find("td.esc-layout-article-cell")
+	articleNodes := doc.Find("td.esc-layout-article-cell")
 	//firstNode := articleNodes.Nodes[0]
 	log.Println(articleNodes.Text())
+	log.Println("============================================")
 	articleNodes.Each(func(_ int, s *goquery.Selection) {
-
+		url, titleText, titleHtml := getUrlAndTitle(s)
+		pubDate := getPublicationDate(s)
+		article := articleDescription{Url:url, TitleText:titleText, TitleHtml:titleHtml, PublicationDate:pubDate}
+		fmt.Println("-----------------------")
+		fmt.Println(article.Url)
+		fmt.Println(article.TitleText)
+		fmt.Println(article.TitleHtml)
+		fmt.Println(article.PublicationDate)
+		articles = append(articles, article)
 	})
+	fmt.Println("-----------------------")
+	log.Println("============================================")
 	return articles
+
+}
+
+func getUrlAndTitle(s *goquery.Selection) (val string, titleText string, titleHtml string) {
+	aLink := s.Find("a").First()
+	val, _ = aLink.Attr("href")
+	titleText = aLink.Text()
+	span := aLink.Find("span").First()
+	titleHtml, _ = span.Html()
+	return
+}
+
+func getPublicationDate(s *goquery.Selection) string {
+	dtContent := s.Find("span.al-attribution-timestamp").First().Text()
+	if strings.Contains(dtContent, "hour") {
+		return helper.CountPublicationDateByHoursAgo(dtContent)
+	}
+	if strings.Contains(dtContent, "minute") {
+		return helper.CountPublicationDateByMinutesAgo(dtContent)
+	}
+	return dtContent
+}
+
+func getSource(s *goquery.Selection) string {
+	return ""
+}
+
+func getSnippetHtml(s *goquery.Selection) string {
+	return ""
+}
+
+func getArticleSnippet(s *goquery.Selection) string {
+	return ""
 }
 
 func GetResponse(url string) (resp *http.Response) {
