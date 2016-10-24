@@ -1,2 +1,2 @@
 # newsscraper
-Google news scraper on golang.
+Google news scraper on GoLang.

@@ -78,8 +78,6 @@ func getSource(s *goquery.Selection) string {
 }
 
 func getSnippetHtmAndText(s *goquery.Selection) (snippetHtml string, snippetText string) {
-	//string snippetHtml = GetSnippetHtml(articleNode);
-	//string articleSnippet = ClearHtmlTags(snippetHtml);
 	snippetDiv := s.Find("div.esc-lead-snippet-wrapper").First()
 	snippetHtml, _ = snippetDiv.Html()
 	snippetText = snippetDiv.Text()
