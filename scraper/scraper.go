@@ -27,20 +27,23 @@ func GetNews(url string) []articleDescription {
 	//}
 
 	doc := loadDoc("page.html")
-	//var articleNodes = HtmlDoc.DocumentNode.SelectNodes("//td[@class='esc-layout-article-cell']");
 	articleNodes := doc.Find("td.esc-layout-article-cell")
-	//firstNode := articleNodes.Nodes[0]
 	log.Println(articleNodes.Text())
 	log.Println("============================================")
 	articleNodes.Each(func(_ int, s *goquery.Selection) {
 		url, titleText, titleHtml := getUrlAndTitle(s)
 		pubDate := getPublicationDate(s)
-		article := articleDescription{Url:url, TitleText:titleText, TitleHtml:titleHtml, PublicationDate:pubDate}
+		source := getSource(s)
+		snippetHtml, snippetText := getSnippetHtmAndText(s)
+		article := articleDescription{Url:url, TitleText:titleText, TitleHtml:titleHtml, PublicationDate:pubDate, Source:source, SnippetHtml:snippetHtml, ArticleSnippet:snippetText}
 		fmt.Println("-----------------------")
 		fmt.Println(article.Url)
 		fmt.Println(article.TitleText)
 		fmt.Println(article.TitleHtml)
 		fmt.Println(article.PublicationDate)
+		fmt.Println(article.Source)
+		fmt.Println(article.SnippetHtml)
+		fmt.Println(article.ArticleSnippet)
 		articles = append(articles, article)
 	})
 	fmt.Println("-----------------------")
@@ -70,15 +73,17 @@ func getPublicationDate(s *goquery.Selection) string {
 }
 
 func getSource(s *goquery.Selection) string {
-	return ""
+	sourceNode := s.Find("span.al-attribution-source").First()
+	return sourceNode.Text()
 }
 
-func getSnippetHtml(s *goquery.Selection) string {
-	return ""
-}
-
-func getArticleSnippet(s *goquery.Selection) string {
-	return ""
+func getSnippetHtmAndText(s *goquery.Selection) (snippetHtml string, snippetText string) {
+	//string snippetHtml = GetSnippetHtml(articleNode);
+	//string articleSnippet = ClearHtmlTags(snippetHtml);
+	snippetDiv := s.Find("div.esc-lead-snippet-wrapper").First()
+	snippetHtml, _ = snippetDiv.Html()
+	snippetText = snippetDiv.Text()
+	return
 }
 
 func GetResponse(url string) (resp *http.Response) {
