@@ -1,6 +1,10 @@
 package mongodbnewsapi
+import (
+
+)
 // package contains methods to save news records to MongoDb
 //https://godoc.org/gopkg.in/mgo.v2
+// Persistence with mongodb in book Web Development with Go
 
 //private static void SaveArticlesToMongoDb(List<ArticleDescription> articles, string location)
 //{
