@@ -9,7 +9,8 @@ import (
 )
 
 func SaveArticlesToMongoDb(articles []scraper.ArticleDescription) {
-	session, err := mgo.Dial("mongodb://dbusername:Abc%21_587@ds019076.mlab.com:19076/agirenko")
+	// connection string to mlab database looks like: "mongodb://USER:PASS@ds019076.mlab.com:19076/agirenko"
+	session, err := mgo.Dial("localhost")
 	if err != nil {
 		panic(err)
 	}
