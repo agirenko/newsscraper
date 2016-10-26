@@ -10,23 +10,21 @@ import (
 	"os"
 	"strings"
 	"github.com/agirenko/newsscraper/helper"
-	//"path/filepath"
-	//"go/doc"
 )
 
-func GetNews(url string) []articleDescription {
+func GetNews(url string) []ArticleDescription {
 	fmt.Println("scraper started")
-	var articles []articleDescription
-	//resp := GetResponse(url)
-	//defer resp.Body.Close()
+	var articles []ArticleDescription
+	resp := GetResponse(url)
+	defer resp.Body.Close()
 	//printBody(resp)
 	//fmt.Println(resp.Header)
-	//doc, err := goquery.NewDocumentFromResponse(resp)
-	//if (err != nil) {
-	//	panic(err)
-	//}
-
-	doc := loadDoc("page.html")
+	doc, err := goquery.NewDocumentFromResponse(resp)
+	if (err != nil) {
+		panic(err)
+	}
+	// to test/debug locally
+	//doc := loadDoc("page.html")
 	articleNodes := doc.Find("td.esc-layout-article-cell")
 	log.Println(articleNodes.Text())
 	log.Println("============================================")
@@ -35,9 +33,9 @@ func GetNews(url string) []articleDescription {
 		pubDate := getPublicationDate(s)
 		source := getSource(s)
 		snippetHtml, snippetText := getSnippetHtmAndText(s)
-		article := articleDescription{Url:url, TitleText:titleText, TitleHtml:titleHtml, PublicationDate:pubDate, Source:source, SnippetHtml:snippetHtml, ArticleSnippet:snippetText}
+		article := ArticleDescription{ArticleUrl:url, TitleText:titleText, TitleHtml:titleHtml, PublicationDate:pubDate, Source:source, SnippetHtml:snippetHtml, ArticleSnippet:snippetText, Location:"world"}
 		fmt.Println("-----------------------")
-		fmt.Println(article.Url)
+		fmt.Println(article.ArticleUrl)
 		fmt.Println(article.TitleText)
 		fmt.Println(article.TitleHtml)
 		fmt.Println(article.PublicationDate)
@@ -113,6 +111,3 @@ func loadDoc(page string) *goquery.Document {
 	}
 	return goquery.NewDocumentFromNode(node)
 }
-
-
-
