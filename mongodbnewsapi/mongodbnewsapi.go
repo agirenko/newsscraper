@@ -26,7 +26,7 @@ func SaveArticlesToMongoDb(articles []scraper.ArticleDescription) {
 		if err != nil {
 			log.Fatal(err)
 		}
-		if foundNumber == 0 {
+		if foundNumber == 0 { // add the article to mongoDb if it does not exist yet
 			articles[i].CreatedAt = time.Now().UTC()
 			articles[i].UpdatedAt = time.Now().UTC()
 			err = collection.Insert(&articles[i])
